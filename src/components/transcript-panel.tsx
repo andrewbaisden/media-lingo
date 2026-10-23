@@ -59,10 +59,14 @@ export function TranscriptPanel({
   }
 
   return (
-    <Card className="min-w-0">
+    <Card className="min-w-0 bg-white/55 shadow-none ring-foreground/10">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardTitle className="font-display text-3xl font-normal tracking-tight text-[#2a1845]">
+          {title}
+        </CardTitle>
+        <CardDescription className="tracking-[0.14em] uppercase">
+          {description}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div
@@ -71,7 +75,7 @@ export function TranscriptPanel({
               ? "original-transcript"
               : "translated-transcript"
           }
-          className="max-h-80 min-h-32 overflow-auto whitespace-pre-wrap rounded-lg bg-muted/50 p-4 text-sm leading-6"
+          className="max-h-80 min-h-32 overflow-auto rounded-[1.25rem] bg-white/70 p-4 text-sm leading-6 whitespace-pre-wrap"
         >
           {body ?? pendingLabel ?? "Waiting for text."}
         </div>
@@ -79,6 +83,7 @@ export function TranscriptPanel({
           <Button
             type="button"
             variant="outline"
+            className="rounded-full bg-white/80"
             disabled={!trimmed}
             onClick={() => void copyText()}
           >
@@ -88,6 +93,7 @@ export function TranscriptPanel({
           <Button
             type="button"
             variant="outline"
+            className="rounded-full bg-white/80"
             disabled={!trimmed}
             onClick={downloadText}
           >

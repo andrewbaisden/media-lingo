@@ -20,19 +20,24 @@ export function ProcessingProgress({
   statuses,
 }: ProcessingProgressProps) {
   return (
-    <section aria-label="Processing progress" className="flex flex-col gap-4">
-      <h2 className="text-sm font-medium text-muted-foreground">
+    <section aria-label="Processing progress" className="flex flex-col gap-5">
+      <h2 className="font-display text-3xl tracking-tight text-[#2a1845]">
         {phaseLabel}
       </h2>
-      <ol className="grid gap-3 sm:grid-cols-4">
-        {STEPS.map((step) => {
+      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {STEPS.map((step, index) => {
           const status = statuses[step];
           return (
             <li key={step} className="flex items-center gap-2 text-sm">
               <StepMark status={status} />
               <span
-                className={status === "idle" ? "text-muted-foreground" : ""}
+                className={
+                  status === "idle" ? "text-foreground/45" : "text-foreground"
+                }
               >
+                <span className="mr-1.5 text-foreground/35">
+                  [{String(index + 1).padStart(2, "0")}]
+                </span>
                 {stepLabel(step, status)}
               </span>
             </li>
@@ -46,7 +51,7 @@ export function ProcessingProgress({
 function StepMark({ status }: { status: StepStatus }) {
   if (status === "done") {
     return (
-      <span className="flex size-5 items-center justify-center rounded-full bg-foreground text-background">
+      <span className="flex size-5 items-center justify-center rounded-full bg-[#6d28d9] text-white">
         <CheckIcon className="size-3" />
       </span>
     );

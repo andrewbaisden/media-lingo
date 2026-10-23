@@ -4,6 +4,8 @@ MediaLingo turns audio and video into a transcript, a translation, and spoken au
 
 Upload a file, choose the source language and the language you want, and MediaLingo writes the transcript, translates it, and speaks the translation. Transcription and translation use [HappyScribe](https://www.happyscribe.com). Speech uses a local [Voicebox](https://github.com/jamiepine/voicebox) server.
 
+![MediaLingo home page](docs/home.png)
+
 ## Requirements
 
 - Node.js 20 or newer

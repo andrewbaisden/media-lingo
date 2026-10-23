@@ -1,6 +1,5 @@
 "use client";
 
-import { UploadIcon } from "lucide-react";
 import { useRef, type DragEvent } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -39,22 +38,18 @@ export function MediaDropzone({
     <div
       onDragOver={(event) => event.preventDefault()}
       onDrop={onDrop}
-      className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-muted/40 px-6 py-12 text-center"
+      className="flex flex-col items-start gap-4 rounded-[2rem] bg-white/50 px-7 py-8 text-left ring-1 ring-foreground/10"
     >
-      <div className="flex size-11 items-center justify-center rounded-full bg-background ring-1 ring-foreground/10">
-        <UploadIcon className="size-5 text-muted-foreground" />
-      </div>
       <div>
-        <p className="text-base font-medium">
-          {fileName ? fileName : "Drag audio or video here"}
+        <p className="font-display text-3xl leading-none tracking-tight text-[#2a1845]">
+          {fileName ? fileName : "Drop audio or video"}
         </p>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-3 text-sm text-muted-foreground">
           {fileName && fileSize !== undefined
             ? formatFileSize(fileSize)
             : "MP3, WAV, M4A, MP4, MOV, or WebM up to 100 MB"}
         </p>
       </div>
-      <p className="text-sm text-muted-foreground">or</p>
       <input
         ref={inputRef}
         id="media-file"
@@ -70,6 +65,7 @@ export function MediaDropzone({
       <Button
         type="button"
         variant="outline"
+        className="h-10 rounded-full bg-white/80 px-4"
         disabled={disabled}
         onClick={() => inputRef.current?.click()}
       >

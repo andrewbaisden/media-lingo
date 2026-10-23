@@ -7,10 +7,17 @@ import { LanguageSelector } from "@/components/language-selector";
 import { MediaDropzone } from "@/components/media-dropzone";
 import { MediaPreview } from "@/components/media-preview";
 import { ProcessingProgress } from "@/components/processing-progress";
+import {
+  Eyebrow,
+  pillClassName,
+  SiteFooter,
+  SiteHeader,
+  SiteHero,
+  StudioOrb,
+} from "@/components/site-frame";
 import { TranscriptPanel } from "@/components/transcript-panel";
 import { VoiceGenerator } from "@/components/voice-generator";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   isSameSpokenLanguage,
   languageLabel,
@@ -204,126 +211,147 @@ export function MediaLingoApp() {
   const showProgress = state.upload !== "idle" || state.phaseLabel === "Failed";
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-4xl font-semibold tracking-tight">MediaLingo</h1>
-        <p className="max-w-xl text-base text-muted-foreground">
-          Upload audio or video. MediaLingo transcribes it, translates the
-          transcript, and speaks the translation.
-        </p>
-      </header>
-
-      <Card>
-        <CardContent className="flex flex-col gap-6">
-          <MediaDropzone
-            fileName={state.media?.displayName}
-            fileSize={state.media?.size}
-            disabled={busy}
-            onFile={chooseFile}
-          />
-          {state.media ? (
-            <MediaPreview
-              src={state.media.previewUrl}
-              kind={state.media.kind}
-              name={state.media.displayName}
-            />
-          ) : null}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <LanguageSelector
-              id="source-language"
-              label="Source"
-              value={state.sourceLanguage}
-              options={sourceLanguages}
-              disabled={busy}
-              onChange={(language) => {
-                setFormError(undefined);
-                dispatch({ type: "set-source", language });
-              }}
-            />
-            <LanguageSelector
-              id="target-language"
-              label="Translate to"
-              value={state.targetLanguage}
-              options={targetLanguages}
-              disabled={busy}
-              onChange={(language) => {
-                setFormError(undefined);
-                dispatch({ type: "set-target", language });
-              }}
-            />
-          </div>
-          {isSameSpokenLanguage(state.sourceLanguage, state.targetLanguage) ? (
-            <p className="text-sm text-muted-foreground">
-              {sameLanguageMessage(state.sourceLanguage, state.targetLanguage)}
+    <div id="top" className="relative flex min-h-full flex-1 flex-col">
+      <SiteHeader />
+      <SiteHero />
+      <main
+        id="studio"
+        className="mx-auto flex w-full max-w-7xl scroll-mt-24 flex-1 flex-col gap-14 px-6 py-16 lg:px-10"
+      >
+        <div className="grid items-end gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <div className="flex flex-col items-start gap-4">
+            <Eyebrow>Your file</Eyebrow>
+            <h2 className="font-display text-[clamp(3rem,5vw,4.75rem)] leading-[0.9] tracking-[-0.03em] text-[#2a1845]">
+              <span className="italic">Bring</span> a recording.
+            </h2>
+            <p className="max-w-sm text-sm leading-6 text-foreground/65">
+              Add audio or video, choose the source language and the language
+              you want, then process it.
             </p>
-          ) : null}
-          <div className="flex justify-center">
-            <Button
-              type="button"
-              size="lg"
-              className="min-w-36"
-              disabled={
-                busy ||
-                !state.media ||
-                isSameSpokenLanguage(state.sourceLanguage, state.targetLanguage)
-              }
-              onClick={() => void processMedia()}
-            >
-              {busy && state.voice !== "active" ? state.phaseLabel : "Process"}
-            </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      {formError ? <ErrorAlert message={formError} /> : null}
-      {pipelineError ? <ErrorAlert message={pipelineError} /> : null}
-      {showProgress ? (
-        <ProcessingProgress
-          phaseLabel={state.phaseLabel}
-          statuses={{
-            upload: state.upload,
-            transcription: state.transcription,
-            translation: state.translation,
-            voice: state.voice,
-          }}
-        />
-      ) : null}
-
-      {state.transcript !== undefined || state.translation === "active" ? (
-        <section className="grid gap-4 md:grid-cols-2">
-          <TranscriptPanel
-            title="Original transcript"
-            description={languageLabel(sourceLanguages, state.sourceLanguage)}
-            text={state.transcript}
-            pendingLabel="Preparing the transcript."
-            downloadName="original-transcript.txt"
-          />
-          <TranscriptPanel
-            title="Translated transcript"
-            description={languageLabel(targetLanguages, state.targetLanguage)}
-            text={state.translatedText}
-            pendingLabel={
-              state.translation === "active"
-                ? "Translating."
-                : "Waiting for the translation."
-            }
-            downloadName="translated-transcript.txt"
-          >
-            {state.translatedText ? (
-              <VoiceGenerator
-                disabled={busy && state.voice !== "active"}
-                generating={state.voice === "active"}
-                audioUrl={state.generatedAudioUrl}
-                error={state.voice === "failed" ? state.error : undefined}
-                onGenerate={(profileId, engine) =>
-                  void generateVoice(profileId, engine)
-                }
+          <div className="flex flex-col gap-6">
+            <MediaDropzone
+              fileName={state.media?.displayName}
+              fileSize={state.media?.size}
+              disabled={busy}
+              onFile={chooseFile}
+            />
+            {state.media ? (
+              <MediaPreview
+                src={state.media.previewUrl}
+                kind={state.media.kind}
+                name={state.media.displayName}
               />
             ) : null}
-          </TranscriptPanel>
-        </section>
-      ) : null}
-    </main>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <LanguageSelector
+                id="source-language"
+                label="Source"
+                value={state.sourceLanguage}
+                options={sourceLanguages}
+                disabled={busy}
+                onChange={(language) => {
+                  setFormError(undefined);
+                  dispatch({ type: "set-source", language });
+                }}
+              />
+              <LanguageSelector
+                id="target-language"
+                label="Translate to"
+                value={state.targetLanguage}
+                options={targetLanguages}
+                disabled={busy}
+                onChange={(language) => {
+                  setFormError(undefined);
+                  dispatch({ type: "set-target", language });
+                }}
+              />
+            </div>
+            {isSameSpokenLanguage(
+              state.sourceLanguage,
+              state.targetLanguage,
+            ) ? (
+              <p className="text-sm text-muted-foreground">
+                {sameLanguageMessage(
+                  state.sourceLanguage,
+                  state.targetLanguage,
+                )}
+              </p>
+            ) : null}
+            <div>
+              <Button
+                type="button"
+                className={pillClassName}
+                disabled={
+                  busy ||
+                  !state.media ||
+                  isSameSpokenLanguage(
+                    state.sourceLanguage,
+                    state.targetLanguage,
+                  )
+                }
+                onClick={() => void processMedia()}
+              >
+                {busy && state.voice !== "active"
+                  ? state.phaseLabel
+                  : "Process"}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {formError ? <ErrorAlert message={formError} /> : null}
+        {pipelineError ? <ErrorAlert message={pipelineError} /> : null}
+        {showProgress ? (
+          <ProcessingProgress
+            phaseLabel={state.phaseLabel}
+            statuses={{
+              upload: state.upload,
+              transcription: state.transcription,
+              translation: state.translation,
+              voice: state.voice,
+            }}
+          />
+        ) : null}
+
+        {state.transcript !== undefined || state.translation === "active" ? (
+          <section className="grid gap-4 md:grid-cols-2">
+            <TranscriptPanel
+              title="Original transcript"
+              description={languageLabel(sourceLanguages, state.sourceLanguage)}
+              text={state.transcript}
+              pendingLabel="Preparing the transcript."
+              downloadName="original-transcript.txt"
+            />
+            <TranscriptPanel
+              title="Translated transcript"
+              description={languageLabel(targetLanguages, state.targetLanguage)}
+              text={state.translatedText}
+              pendingLabel={
+                state.translation === "active"
+                  ? "Translating."
+                  : "Waiting for the translation."
+              }
+              downloadName="translated-transcript.txt"
+            >
+              {state.translatedText ? (
+                <VoiceGenerator
+                  disabled={busy && state.voice !== "active"}
+                  generating={state.voice === "active"}
+                  audioUrl={state.generatedAudioUrl}
+                  error={state.voice === "failed" ? state.error : undefined}
+                  onGenerate={(profileId, engine) =>
+                    void generateVoice(profileId, engine)
+                  }
+                />
+              ) : null}
+            </TranscriptPanel>
+          </section>
+        ) : null}
+      </main>
+      <SiteFooter />
+      <StudioOrb />
+    </div>
   );
 }
 

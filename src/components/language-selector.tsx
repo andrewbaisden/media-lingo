@@ -28,11 +28,17 @@ export function LanguageSelector({
 }: LanguageSelectorProps) {
   return (
     <div className="flex min-w-0 flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label
+        htmlFor={id}
+        className="text-[11px] font-medium tracking-[0.18em] text-foreground/55 uppercase"
+      >
         {label}
       </label>
       <Select value={value} onValueChange={onChange} disabled={disabled}>
-        <SelectTrigger id={id} className="w-full">
+        <SelectTrigger
+          id={id}
+          className="h-11 w-full rounded-full bg-white/70 px-4"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

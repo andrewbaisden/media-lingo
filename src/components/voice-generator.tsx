@@ -100,9 +100,12 @@ export function VoiceGenerator({
   const notice = error || status?.message;
 
   return (
-    <div className="flex w-full flex-col gap-3 border-t pt-4">
+    <div className="flex w-full flex-col gap-3 border-t border-foreground/10 pt-4">
       <div className="flex flex-col gap-2">
-        <label htmlFor="voice-profile" className="text-sm font-medium">
+        <label
+          htmlFor="voice-profile"
+          className="text-[11px] font-medium tracking-[0.18em] text-foreground/55 uppercase"
+        >
           Voice
         </label>
         <Select
@@ -110,7 +113,10 @@ export function VoiceGenerator({
           onValueChange={setProfileId}
           disabled={disabled || generating || !status?.profiles.length}
         >
-          <SelectTrigger id="voice-profile" className="w-full">
+          <SelectTrigger
+            id="voice-profile"
+            className="h-11 w-full rounded-full bg-white/70 px-4"
+          >
             <SelectValue
               placeholder={loading ? "Checking Voicebox" : "Default"}
             />
@@ -127,6 +133,7 @@ export function VoiceGenerator({
       <div className="flex flex-wrap gap-2">
         <Button
           type="button"
+          className="rounded-full px-4"
           disabled={disabled || generating || !profileId || !status?.available}
           onClick={() =>
             onGenerate(
@@ -138,7 +145,12 @@ export function VoiceGenerator({
         >
           {generating ? "Generating voice" : "Generate Voice"}
         </Button>
-        <Button type="button" variant="outline" onClick={checkAgain}>
+        <Button
+          type="button"
+          variant="outline"
+          className="rounded-full bg-white/80"
+          onClick={checkAgain}
+        >
           Check again
         </Button>
       </div>
