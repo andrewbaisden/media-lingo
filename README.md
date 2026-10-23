@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MediaLingo
 
-## Getting Started
+MediaLingo turns audio and video into a transcript, a translation, and spoken audio.
 
-First, run the development server:
+Upload a file, choose the source language and the language you want, and MediaLingo writes the transcript, translates it, and speaks the translation. Transcription and translation use [HappyScribe](https://www.happyscribe.com). Speech uses a local [Voicebox](https://github.com/jamiepine/voicebox) server.
+
+## Requirements
+
+- Node.js 20 or newer
+- pnpm 10 or newer
+- A HappyScribe API key
+- Voicebox on Apple Silicon, from the official macOS build
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Add the HappyScribe key to `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+HAPPYSCRIBE_API_KEY=your_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`HAPPYSCRIBE_ORGANIZATION_ID` selects a workspace. When it is empty, MediaLingo uses the first workspace on the key.
 
-## Learn More
+Install Voicebox and leave it open:
 
-To learn more about Next.js, take a look at the following resources:
+1. Download the Apple Silicon build from https://voicebox.sh/download/mac-arm.
+2. Open Voicebox and create a voice profile.
+3. Keep Voicebox running. It serves speech at `http://127.0.0.1:17493`.
+4. Set `VOICEBOX_API_URL` only if Voicebox uses a different address.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open http://127.0.0.1:3000.
 
-## Deploy on Vercel
+## Use MediaLingo
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Add an MP3, WAV, M4A, MP4, MOV, or WebM file up to 100 MB.
+2. Choose the source language and the translation language.
+3. Click **Process**.
+4. Read the original transcript and the translation. Copy either one, or download it as `.txt`.
+5. Choose a voice and click **Generate Voice**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Source languages are regional codes such as `en-US`. Translation languages are the short codes HappyScribe expects, such as `es`, `pt-BR`, and `pt-PT`. The source and target need to be different languages. Portuguese (Brazil) can still be translated into Portuguese (Portugal).
+
+HappyScribe machine transcription and translation use credits on the connected account. Voicebox speaks through the voice profiles on this computer. Preset voices such as Alloy are ready to use. MediaLingo does not clone voices.
+
+## Development
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm test:e2e
+pnpm build
+```
+
+`pnpm test` does not call HappyScribe. `pnpm test:e2e` runs the product flow with the API routes mocked.
+
+```bash
+pnpm test:integration
+```
+
+`pnpm test:integration` is opt-in. Without `HAPPYSCRIBE_API_KEY` it skips. With a key, it lists workspaces and requests one signed upload URL. It does not create an order.

@@ -1,0 +1,102 @@
+"use client";
+
+import { CopyIcon, DownloadIcon } from "lucide-react";
+import { useState, type ReactNode } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+type TranscriptPanelProps = {
+  title: string;
+  description: string;
+  text?: string;
+  pendingLabel?: string;
+  downloadName: string;
+  children?: ReactNode;
+};
+
+export function TranscriptPanel({
+  title,
+  description,
+  text,
+  pendingLabel,
+  downloadName,
+  children,
+}: TranscriptPanelProps) {
+  const [copied, setCopied] = useState(false);
+  const trimmed = text?.trim();
+  const body =
+    text === undefined
+      ? undefined
+      : trimmed || "No words were detected in this file.";
+
+  async function copyText() {
+    if (!trimmed) {
+      return;
+    }
+    await navigator.clipboard.writeText(trimmed);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  }
+
+  function downloadText() {
+    if (!trimmed) {
+      return;
+    }
+    const blob = new Blob([trimmed], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = downloadName;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <Card className="min-w-0">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div
+          data-testid={
+            title === "Original transcript"
+              ? "original-transcript"
+              : "translated-transcript"
+          }
+          className="max-h-80 min-h-32 overflow-auto whitespace-pre-wrap rounded-lg bg-muted/50 p-4 text-sm leading-6"
+        >
+          {body ?? pendingLabel ?? "Waiting for text."}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={!trimmed}
+            onClick={() => void copyText()}
+          >
+            <CopyIcon />
+            {copied ? "Copied" : "Copy"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={!trimmed}
+            onClick={downloadText}
+          >
+            <DownloadIcon />
+            Download .txt
+          </Button>
+        </div>
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
